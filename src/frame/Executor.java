@@ -36,19 +36,19 @@ public class Executor {
         data.setClientType("umum");
 
         Item item = new Item();
-        item.setName("Besok bsbsb");
+        item.setName("Ms. Office");
         item.setQuantity(1);
-        item.setPrice(100);
+        item.setPrice(500000);
 
         Item item2 = new Item();
-        item2.setName("agenda naon?");
+        item2.setName("Java Prog.");
         item2.setQuantity(1);
-        item2.setPrice(200);
+        item2.setPrice(650000);
 
         Item item3 = new Item();
-        item3.setName("de ayi?");
+        item3.setName("Photoshop CS6");
         item3.setQuantity(1);
-        item3.setPrice(1000);
+        item3.setPrice(750000);
 
         data.shop(item);
         data.shop(item2);
