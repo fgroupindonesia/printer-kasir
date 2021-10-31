@@ -17,20 +17,18 @@ import helper.PrintUtility;
  */
 public class Executor {
 
-    final static int LONG_DATE = 2;
-    final static int SHORT_DATE = 1;
-
     public static void main(String[] args) {
 
         FileSystemManager fsm = new FileSystemManager();
         PrintUtility pu = new PrintUtility();
         pu.preparePrinter();
-        pu.setDateMode(LONG_DATE);
+        
 
         Receipt data = new Receipt();
         data.setTitle("Training & Digital Solutions Provider");
         data.setPicture(fsm.getProfilePictureObject("fgroup.jpg"));
-
+        data.setDateMode(Receipt.LONG_DATE);
+        
         //data.setTitle("Rumah Terapi Herbal");
         //data.setPicture(fsm.getProfilePictureObject("rth.jpg"));
         data.setClientName("ayi");

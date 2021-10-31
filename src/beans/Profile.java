@@ -15,6 +15,7 @@ import java.io.File;
 public class Profile {
     private String title;
     private String address;
+    private String companyName;
     private File picture;
 
     /**
@@ -57,6 +58,20 @@ public class Profile {
      */
     public void setPicture(File picture) {
         this.picture = picture;
+    }
+
+    /**
+     * @return the companyName
+     */
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    /**
+     * @param companyName the companyName to set
+     */
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
     
 }

@@ -9,6 +9,8 @@ package frame;
 import beans.Item;
 import beans.Profile;
 import beans.Receipt;
+import com.github.anastaciocintra.escpos.EscPos;
+import com.github.anastaciocintra.output.PrinterOutputStream;
 import helper.Effects;
 import helper.FileSystemManager;
 import helper.PrintUtility;
@@ -17,11 +19,15 @@ import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Image;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import simulation.AccessOperation;
 
 /**
  *
@@ -36,6 +42,8 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
     ArrayList<Item> dataOrders = new ArrayList<Item>();
     Receipt resi = new Receipt();
     FileSystemManager fsm = new FileSystemManager();
+    AccessOperation accessDB = new AccessOperation();
+    Profile selectedProfile = null;
 
     public PrinterKasirFrame() {
         initComponents();
@@ -87,13 +95,14 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
         labelAddAnotherProfile = new javax.swing.JLabel();
         buttonPrintData = new javax.swing.JButton();
         buttonClearData = new javax.swing.JButton();
+        buttonOpenDatabase = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         comboboxPrinterNameList = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Printer Kasir");
         setIconImage(getFrameIcon());
-        setPreferredSize(new java.awt.Dimension(600, 500));
+        setPreferredSize(new java.awt.Dimension(700, 500));
 
         jPanel2.setLayout(new java.awt.BorderLayout());
 
@@ -254,6 +263,11 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
         buttonPrintData.setText("Print");
         buttonPrintData.setEnabled(false);
         buttonPrintData.setPreferredSize(new java.awt.Dimension(100, 41));
+        buttonPrintData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonPrintDataActionPerformed(evt);
+            }
+        });
         jPanel7.add(buttonPrintData);
 
         buttonClearData.setIcon(new javax.swing.ImageIcon(getClass().getResource("/frame/images/clear-logo.png"))); // NOI18N
@@ -267,6 +281,16 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
         });
         jPanel7.add(buttonClearData);
 
+        buttonOpenDatabase.setIcon(new javax.swing.ImageIcon(getClass().getResource("/frame/images/database-logo.png"))); // NOI18N
+        buttonOpenDatabase.setText("Database");
+        buttonOpenDatabase.setPreferredSize(new java.awt.Dimension(150, 41));
+        buttonOpenDatabase.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonOpenDatabaseActionPerformed(evt);
+            }
+        });
+        jPanel7.add(buttonOpenDatabase);
+
         jPanel4.add(jPanel7, java.awt.BorderLayout.PAGE_END);
 
         jPanel1.add(jPanel4, java.awt.BorderLayout.CENTER);
@@ -276,6 +300,11 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
         jPanel3.setLayout(new java.awt.BorderLayout());
 
         comboboxPrinterNameList.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboboxPrinterNameList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboboxPrinterNameListActionPerformed(evt);
+            }
+        });
         jPanel3.add(comboboxPrinterNameList, java.awt.BorderLayout.CENTER);
 
         jPanel1.add(jPanel3, java.awt.BorderLayout.PAGE_START);
@@ -330,9 +359,6 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
 
         renderTable();
 
-        resi.setClientName(textboxClientName.getText());
-        resi.setClientType(comboboxClientType.getSelectedItem().toString());
-
         buttonSaveOrder.setEnabled(false);
         clearTextbox(textboxItemName);
         clearTextbox(textboxItemPrice);
@@ -367,6 +393,12 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
         dataOrders.clear();
         renderTable();
         resi = new Receipt();
+
+        clearTextbox(textboxItemName);
+        clearTextbox(textboxItemPrice);
+        clearTextbox(textboxClientName);
+
+        buttonClearData.setEnabled(false);
 
     }//GEN-LAST:event_buttonClearDataActionPerformed
 
@@ -452,6 +484,71 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
         prf.setVisible(true);
     }//GEN-LAST:event_labelAddAnotherProfileMouseClicked
 
+    private void buttonOpenDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonOpenDatabaseActionPerformed
+
+        try {
+            Desktop p = Desktop.getDesktop();
+            p.open(new File(fsm.getDBCompletePath()));
+        } catch (Exception ex) {
+            System.err.println("Error when opening database." + ex.getMessage());
+            ex.printStackTrace();
+        }
+
+    }//GEN-LAST:event_buttonOpenDatabaseActionPerformed
+
+    private void buttonPrintDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPrintDataActionPerformed
+
+        // grab all the values from arrays
+        // because array reflect the jtable too
+        // and save it into Database
+        resi.setShopList(dataOrders);
+        accessDB.addData(resi);
+        accessDB.exit();
+
+        resi.setCompanyName(selectedProfile.getCompanyName());
+        resi.setTitle(selectedProfile.getTitle());
+        resi.setPicture(selectedProfile.getPicture());
+        resi.generateUniqueNumber();
+        resi.setDateMode(Receipt.LONG_DATE);
+
+        //data.setTitle("Rumah Terapi Herbal");
+        //data.setPicture(fsm.getProfilePictureObject("rth.jpg"));
+        resi.setClientName(textboxClientName.getText());
+        resi.setClientType(comboboxClientType.getSelectedItem().toString());
+
+        for (Item s : dataOrders) {
+            resi.shop(s);
+        }
+        /*
+        Item item = new Item();
+        item.setName("Ms. Office");
+        item.setQuantity(1);
+        item.setPrice(500000);
+         */
+
+        // clear the form
+        clearTextbox(textboxItemName);
+        clearTextbox(textboxItemPrice);
+
+        // call the printer
+        pu.setReceipt(resi);
+        pu.print();
+
+        // clear back the behind the scenes
+        dataOrders = new ArrayList<Item>();
+        resi = new Receipt();
+        
+    }//GEN-LAST:event_buttonPrintDataActionPerformed
+
+    private void comboboxPrinterNameListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboboxPrinterNameListActionPerformed
+
+        // set the printer into the print utility
+        if (comboboxPrinterNameList.getSelectedIndex() != -1) {
+            pu.setPrinterChosen(comboboxPrinterNameList.getSelectedItem().toString());
+        }
+
+    }//GEN-LAST:event_comboboxPrinterNameListActionPerformed
+
     private void calculateTotal() {
 
         int total = 0;
@@ -527,6 +624,7 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonClearData;
+    private javax.swing.JButton buttonOpenDatabase;
     private javax.swing.JButton buttonPrintData;
     private javax.swing.JButton buttonSaveOrder;
     private javax.swing.JComboBox<String> comboboxClientType;

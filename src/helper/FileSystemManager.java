@@ -28,14 +28,19 @@ public class FileSystemManager {
     // single data profile selected here
     String profileSelectedFileName = "profile.sel";
     String logoFileName = "logo.png";
+    String dbFileName = "access.accdb";
     String completeSystemPath = System.getenv("APPDATA") + File.separator + appName;
     String completeRawPath = completeSystemPath + File.separator + rawName;
     String completeProfilePath = completeSystemPath + File.separator + profileFileName;
     String completeProfileSelectedPath = completeSystemPath + File.separator + profileSelectedFileName;
     String completeLogoPath = completeSystemPath + File.separator + logoFileName;
+    String completeDBPath = completeSystemPath + File.separator + dbFileName;
 
     public String getFrameIconPath() {
         return completeLogoPath;
+    }
+    public String getDBCompletePath() {
+        return completeDBPath;
     }
 
     public FileSystemManager() {

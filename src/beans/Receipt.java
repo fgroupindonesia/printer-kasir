@@ -24,9 +24,24 @@ public class Receipt {
     private String dateText;
     private ArrayList<Item> shopList = new ArrayList<Item>();
     private int total;
+    private String tagNumber;
+    private String companyName;
+    
+    public static final int LONG_DATE = 2, SHORT_DATE = 1;
 
-    public String getUniqueNumber() {
-        return new SimpleDateFormat("HHmmss").format(new Date());
+    public String generateUniqueNumber() {
+        this.setTagNumber("P." + new SimpleDateFormat("HHmmss").format(new Date()));
+        return this.getTagNumber();
+    }
+    
+    public void setDateMode(int modeDate) {
+        if (modeDate == SHORT_DATE) {
+            // short
+            dateText = new SimpleDateFormat("dd/MM/yy").format(new Date());
+        } else if (modeDate == LONG_DATE) {
+            // long
+            dateText = new SimpleDateFormat("dd-MMMM-yyyy HH:mm").format(new Date());
+        }
     }
 
     public void shop(Item itemIn) {
@@ -140,6 +155,34 @@ public class Receipt {
      */
     public void setPicture(File picture) {
         this.picture = picture;
+    }
+
+    /**
+     * @return the tagNumber
+     */
+    public String getTagNumber() {
+        return tagNumber;
+    }
+
+    /**
+     * @param tagNumber the tagNumber to set
+     */
+    public void setTagNumber(String tagNumber) {
+        this.tagNumber = tagNumber;
+    }
+
+    /**
+     * @return the companyName
+     */
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    /**
+     * @param companyName the companyName to set
+     */
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
 }

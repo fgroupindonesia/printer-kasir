@@ -13,20 +13,15 @@ import com.github.anastaciocintra.escpos.EscPos;
 import com.github.anastaciocintra.escpos.EscPosConst;
 import com.github.anastaciocintra.escpos.PrintModeStyle;
 import com.github.anastaciocintra.escpos.image.Bitonal;
-import com.github.anastaciocintra.escpos.image.BitonalOrderedDither;
 import com.github.anastaciocintra.escpos.image.BitonalThreshold;
 import com.github.anastaciocintra.escpos.image.CoffeeImageImpl;
 import com.github.anastaciocintra.escpos.image.EscPosImage;
-import com.github.anastaciocintra.escpos.image.GraphicsImageWrapper;
 import com.github.anastaciocintra.escpos.image.RasterBitImageWrapper;
 import com.github.anastaciocintra.output.PrinterOutputStream;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.print.PrintService;
 
@@ -84,36 +79,39 @@ public class PrintUtility {
             dateEngine = new SimpleDateFormat("dd/MM/yy").format(new Date());
         } else if (modeDate == 2) {
             // long
-            dateEngine = new SimpleDateFormat("dd-MMM-yyyy").format(new Date());
+            dateEngine = new SimpleDateFormat("dd-MMM-yyyy hh:mm").format(new Date());
         }
     }
 
-    private String getDefaultDate() {
-        return dateEngine = new SimpleDateFormat("dd/M/yyyy").format(new Date());
+    public void setPrinterChosen(String printerName) {
+        try {
+            printService = PrinterOutputStream.getPrintServiceByName(printerName);
+            printerOutputStream = new PrinterOutputStream(printService);
+            escpos = new EscPos(printerOutputStream);
+        } catch (Exception ex) {
+            System.err.println("error when assigning printer! " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
 
     public void preparePrinter() {
         try {
             System.out.println("========= Printer Names:");
             String[] printServicesNames = PrinterOutputStream.getListPrintServicesNames();
-            String printerName = null;
+
             for (String printServiceName : printServicesNames) {
                 System.out.println(printServiceName);
 
-                if (printServiceName.contains("58mm")) {
+                /*if (printServiceName.contains("58mm")) {
                     printerName = printServiceName;
-                }
+                }*/
                 //obj.printInfo(printServiceName);
                 printerNameList.add(printServiceName);
             }
             System.out.println("========= end.");
 
-            printService = PrinterOutputStream.getPrintServiceByName(printerName);
-            printerOutputStream = new PrinterOutputStream(printService);
-            escpos = new EscPos(printerOutputStream);
-
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
             System.out.println("Error when preparing machine " + ex.getMessage());
         }
 
@@ -156,7 +154,7 @@ public class PrintUtility {
         String firstText, secondText;
 
         int intakeLen = 19;
-        
+
         try {
 
             if (len > intakeLen) {
@@ -184,21 +182,13 @@ public class PrintUtility {
 
         try {
 
-            // use the date format 
-            if (dateEngine == null) {
-                // by default
-                dateEngine = this.getDefaultDate();
-            }
-
-            singleReceipt.setDateText(dateEngine);
-
             if (hasLogo()) {
                 creatingDitherImage();
             }
 
             printTitleSafe();
             escpos.write(normal, "No.Resi\t: ");
-            escpos.writeLF(subtitle, singleReceipt.getUniqueNumber());
+            escpos.writeLF(subtitle, singleReceipt.generateUniqueNumber());
             escpos.write(normal, "Client\t: ");
             escpos.writeLF(subtitle, singleReceipt.getClientName());
             escpos.write(normal, "Jenis\t: ");
