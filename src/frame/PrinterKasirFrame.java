@@ -116,7 +116,7 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Item's Name", "Price", "Delete"
+                "Item's Name", "Price", "-"
             }
         ) {
             Class[] types = new Class [] {
