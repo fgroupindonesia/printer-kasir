@@ -30,6 +30,7 @@ This desktop tiny app will help you to manage several basic CASHIER operations s
 2. 128MB of RAM
 3. 82kb of Harddisk freespace (very tiny)
 4. Windows 7 and above
+5. JRE 8 already
 
 
 Thanks for everything! And if you need additional app or small utility to be deployed, please contact our official email for more details!
