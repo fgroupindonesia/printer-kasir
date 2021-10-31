@@ -3,6 +3,9 @@
 
 ### Main Program :
 ![Preview01](images/preview_printer_kasir.png)
+
+
+### Final Output :
 ![Preview02](images/preview_receipt_small.jpg)
 
 
