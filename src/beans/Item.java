@@ -1,7 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * @ PrinterKasir is made by FGroupIndonesia
+ * for open source community!
+ * Please contact our support if you need any assistance 
+ * including : modification, trainings, and etc.
  */
 package beans;
 
