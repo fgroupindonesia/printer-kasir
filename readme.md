@@ -9,6 +9,13 @@
 ![Preview02](images/preview_receipt_small.jpg)
 
 
+### Hardware :
+
+You can use any ESCPOS 58mm x 30mm USB Printer as your main device.
+
+![Preview03](images/printer58mm.jpg)
+
+
 ## First Notice!
 
 This desktop tiny app will help you to manage several basic CASHIER operations such as :
