@@ -185,6 +185,7 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
         jLabel2.setText("Client's Name :");
         jPanel8.add(jLabel2);
 
+        textboxClientName.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         textboxClientName.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         textboxClientName.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -200,13 +201,15 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
         jLabel3.setText("Client's Type :");
         jPanel8.add(jLabel3);
 
-        comboboxClientType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "general", "student" }));
+        comboboxClientType.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        comboboxClientType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "general", "student", "patient" }));
         jPanel8.add(comboboxClientType);
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("Item's Name :");
         jPanel8.add(jLabel4);
 
+        textboxItemName.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         textboxItemName.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         textboxItemName.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -222,6 +225,7 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
         jLabel5.setText("Price :");
         jPanel8.add(jLabel5);
 
+        textboxItemPrice.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         textboxItemPrice.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         textboxItemPrice.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -245,7 +249,8 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
         jLabel6.setText("Profile :");
         jPanel7.add(jLabel6);
 
-        comboboxProfile.setPreferredSize(new java.awt.Dimension(100, 20));
+        comboboxProfile.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        comboboxProfile.setPreferredSize(new java.awt.Dimension(120, 30));
         jPanel7.add(comboboxProfile);
 
         labelAddAnotherProfile.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -299,6 +304,7 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
         jPanel3.setPreferredSize(new java.awt.Dimension(400, 50));
         jPanel3.setLayout(new java.awt.BorderLayout());
 
+        comboboxPrinterNameList.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         comboboxPrinterNameList.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         comboboxPrinterNameList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

@@ -5,7 +5,8 @@
         <group>
             <file>file:/D:/java/desktop/PrinterKasir/src/beans/Receipt.java</file>
             <file>file:/D:/java/desktop/PrinterKasir/src/frame/PrinterKasirFrame.java</file>
-            <file>file:/D:/java/desktop/PrinterKasir/src/helper/FileSystemManager.java</file>
+            <file>file:/D:/java/desktop/PrinterKasir/src/simulation/Executor.java</file>
+            <file>file:/D:/java/desktop/PrinterKasir/src/beans/Item.java</file>
             <file>file:/D:/java/desktop/PrinterKasir/src/simulation/AccessOperation.java</file>
         </group>
     </open-files>
