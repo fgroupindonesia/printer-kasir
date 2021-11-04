@@ -19,6 +19,10 @@ public class Profile {
     private File picture;
     private boolean selected;
 
+    public String toString(){
+        return "profile yaitu " + title + " " + address + " " + companyName + " " + selected;
+    }
+    
     /**
      * @return the title
      */

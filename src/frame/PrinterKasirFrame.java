@@ -251,6 +251,11 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
 
         comboboxProfile.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         comboboxProfile.setPreferredSize(new java.awt.Dimension(120, 30));
+        comboboxProfile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboboxProfileActionPerformed(evt);
+            }
+        });
         jPanel7.add(comboboxProfile);
 
         labelAddAnotherProfile.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -346,7 +351,7 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
                 if (!val.contains("Rp")) {
                     textboxItemPrice.setText(TextFormatter.asCurrency(Integer.parseInt(val)));
                 }
-            }else{
+            } else {
                 MessageBox.showing("Please input valid number only!");
                 textboxItemPrice.requestFocus();
             }
@@ -528,6 +533,13 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
 
     private void buttonPrintDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPrintDataActionPerformed
 
+        // since the profile may changed lastly
+        String nama = comboboxProfile.getSelectedItem().toString();
+        System.out.println("profile pilihan " + nama);
+        selectedProfile = fsm.updateProfileSelected(nama);
+
+        System.out.println("profile terakhir " + selectedProfile);
+        
         // set the printer driver
         applyPrinterChosen();
 
@@ -578,6 +590,13 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
         applyPrinterChosen();
 
     }//GEN-LAST:event_comboboxPrinterNameListActionPerformed
+
+    private void comboboxProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboboxProfileActionPerformed
+
+        
+
+
+    }//GEN-LAST:event_comboboxProfileActionPerformed
 
     private void applyPrinterChosen() {
         if (comboboxPrinterNameList.getSelectedIndex() != -1) {

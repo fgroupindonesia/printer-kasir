@@ -137,6 +137,31 @@ public class FileSystemManager {
         return dataProf;
     }
 
+    public Profile updateProfileSelected(String nameIn) {
+        ArrayList<Profile> data = this.getAllProfiles();
+        int post = 0, postFound = 0;
+        Profile foundProfile = null;
+        for (Profile pf : data) {
+            if (nameIn.equalsIgnoreCase(pf.getCompanyName().toLowerCase())) {
+                pf.setSelected(true);
+                foundProfile = pf;
+                postFound = post;
+            } else {
+                pf.setSelected(false);
+            }
+
+            post++;
+        }
+
+        // update locally
+        if (foundProfile != null) {
+            data.set(postFound, foundProfile);
+            this.saveProfile(data);
+        }
+        return foundProfile;
+
+    }
+
     public Profile readProfileSelected() {
         Profile data = null;
         try {
@@ -144,21 +169,21 @@ public class FileSystemManager {
 
             if (myObj.exists()) {
                 String valTerbaca = null;
-                String valOverall [] = null;
-                
+                String valOverall[] = null;
+
                 Scanner myReader = new Scanner(myObj);
                 while (myReader.hasNextLine()) {
                     valTerbaca = myReader.nextLine();
                     data = new Profile();
-                    
+
                     valOverall = valTerbaca.split(";");
-                    
+
                     data.setSelected(Boolean.valueOf(valOverall[0]));
                     data.setCompanyName(valOverall[1]);
                     data.setTitle(valOverall[2]);
                     data.setAddress(valOverall[3]);
                     data.setPicture(getProfilePictureObject(valOverall[4]));
-                    
+
                     break;
                 }
 
@@ -178,10 +203,10 @@ public class FileSystemManager {
         try {
             FileWriter myWriter = new FileWriter(completeProfilePath);
             for (Profile prof : dataIn) {
-                myWriter.write(prof.isSelected() +";" 
-                        + prof.getCompanyName() + ";" 
-                        + prof.getTitle() + ";" 
-                        + prof.getAddress() + ";" 
+                myWriter.write(prof.isSelected() + ";"
+                        + prof.getCompanyName() + ";"
+                        + prof.getTitle() + ";"
+                        + prof.getAddress() + ";"
                         + prof.getPicture().getName() + "\n");
             }
 
