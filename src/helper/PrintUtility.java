@@ -32,13 +32,29 @@ import javax.print.PrintService;
 public class PrintUtility {
 
     Receipt singleReceipt = new Receipt();
+    boolean useCompanyName = false;
+    public final static int TITLE_ONLY = 1, COMPANY_NAME_ONLY = 2;
+
+    public void setTitleMode(int m) {
+
+        if (m == TITLE_ONLY) {
+            useCompanyName = true;
+        } else {
+            useCompanyName = false;
+        }
+
+    }
+
+    public boolean isTitleModeUsingCompanyName() {
+        return useCompanyName;
+    }
 
     public void setReceipt(Receipt dataIn) {
         singleReceipt = dataIn;
     }
 
     String dateEngine = null;
-    final String HR_LINE = "---------------------------";
+    final String HR_LINE = "------------------------------";
 
     ArrayList<String> printerNameList = new ArrayList<String>();
 
@@ -102,9 +118,9 @@ public class PrintUtility {
             for (String printServiceName : printServicesNames) {
                 System.out.println(printServiceName);
 
-                /*if (printServiceName.contains("58mm")) {
-                    printerName = printServiceName;
-                }*/
+                //if (printServiceName.contains("58mm")) {
+                //    setPrinterChosen(printServiceName);
+                //}
                 //obj.printInfo(printServiceName);
                 printerNameList.add(printServiceName);
             }
@@ -186,7 +202,14 @@ public class PrintUtility {
                 creatingDitherImage();
             }
 
-            printTitleSafe();
+            if (!isTitleModeUsingCompanyName()) {
+                // print out the title instead of company name
+                printTitleSafe();
+            }else{
+                // print out the company name
+                 escpos.writeLF(title, singleReceipt.getCompanyName());
+            }
+
             escpos.write(normal, "No.Resi\t: ");
             escpos.writeLF(subtitle, singleReceipt.generateUniqueNumber());
             escpos.write(normal, "Client\t: ");

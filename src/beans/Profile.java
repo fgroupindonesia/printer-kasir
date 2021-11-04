@@ -17,6 +17,7 @@ public class Profile {
     private String address;
     private String companyName;
     private File picture;
+    private boolean selected;
 
     /**
      * @return the title
@@ -72,6 +73,20 @@ public class Profile {
      */
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+
+    /**
+     * @return the selected
+     */
+    public boolean isSelected() {
+        return selected;
+    }
+
+    /**
+     * @param selected the selected to set
+     */
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
     
 }

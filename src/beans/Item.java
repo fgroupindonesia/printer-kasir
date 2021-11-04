@@ -15,6 +15,10 @@ public class Item {
     private int price;
     private int quantity;
 
+    public String toString(){
+        return "datanya : " + name + " " + price +  " " + quantity;
+    }
+    
     /**
      * @return the name
      */

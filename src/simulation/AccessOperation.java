@@ -124,6 +124,11 @@ public class AccessOperation {
                 st.setString(7, resi.getClientType());
                 st.setString(8, resi.getClientName());
                 st.executeUpdate();
+                
+                
+                System.out.println("Mencoba saving " + satuItem.toString() + "\ndari"+ resi.toString());
+                
+                conn.commit();
             }
 
             st.close();

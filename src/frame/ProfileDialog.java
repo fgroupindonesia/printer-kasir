@@ -30,6 +30,7 @@ public class ProfileDialog extends javax.swing.JDialog {
     FileSystemManager fsm;
     PrinterKasirFrame parentFrame;
     ArrayList<Profile> dataProf;
+    Profile selectedProfile;
 
     public ProfileDialog(javax.swing.JFrame parent, boolean modal) {
         super(parent, modal);
@@ -56,7 +57,7 @@ public class ProfileDialog extends javax.swing.JDialog {
                 command = TextFormatter.asUnderlinedHTML("preview");
                 filename = prof.getPicture().getName();
             }
-            dtm.addRow(new Object[]{false, -1, prof.getTitle(), prof.getAddress(), command, filename});
+            dtm.addRow(new Object[]{prof.isSelected(), prof.getCompanyName(), prof.getTitle(), prof.getAddress(), command, filename});
 
         }
     }
@@ -137,7 +138,7 @@ public class ProfileDialog extends javax.swing.JDialog {
 
             },
             new String [] {
-                "#", "ID", "Title", "Address", "Picture", "Filename"
+                "#", "Company Name", "Title", "Address", "Picture", "Filename"
             }
         ) {
             Class[] types = new Class [] {
@@ -172,9 +173,6 @@ public class ProfileDialog extends javax.swing.JDialog {
             tableProfileData.getColumnModel().getColumn(0).setMinWidth(20);
             tableProfileData.getColumnModel().getColumn(0).setPreferredWidth(20);
             tableProfileData.getColumnModel().getColumn(0).setMaxWidth(20);
-            tableProfileData.getColumnModel().getColumn(1).setMinWidth(0);
-            tableProfileData.getColumnModel().getColumn(1).setPreferredWidth(0);
-            tableProfileData.getColumnModel().getColumn(1).setMaxWidth(0);
             tableProfileData.getColumnModel().getColumn(2).setResizable(false);
             tableProfileData.getColumnModel().getColumn(2).setPreferredWidth(75);
             tableProfileData.getColumnModel().getColumn(3).setResizable(false);
@@ -204,7 +202,7 @@ public class ProfileDialog extends javax.swing.JDialog {
             dtm.setRowCount(0);
 
             // preparing a new empty data
-            dtm.addRow(new Object[]{false, -1, "", "", "browse", ""});
+            dtm.addRow(new Object[]{false, "", "", "", "browse", ""});
 
         }
 
@@ -215,6 +213,7 @@ public class ProfileDialog extends javax.swing.JDialog {
         // call the save button functions
         saveDataProfiles();
         // refresh the parent
+        parentFrame.setProfile(selectedProfile);
         parentFrame.prepareProfiles();
     }//GEN-LAST:event_formWindowClosing
 
@@ -229,28 +228,46 @@ public class ProfileDialog extends javax.swing.JDialog {
     private void saveDataProfiles() {
         ArrayList<Profile> data = new ArrayList<Profile>();
 
+        Boolean oneSelected = false;
+
         // started by 2nd column.
-        int rowIndex = 0, colIndex = 2, totalRow = tableProfileData.getRowCount();
+        int rowIndex = 0, colIndex = 1, totalRow = tableProfileData.getRowCount();
         for (int x = 0; x < totalRow; x++) {
             rowIndex = x;
 
             try {
 
+                Object cell0Value = tableProfileData.getValueAt(rowIndex, 0);
+
+                System.out.println("It is " + cell0Value);
+                
                 String cell1Value = tableProfileData.getValueAt(rowIndex, colIndex).toString();
                 String cell2Value = tableProfileData.getValueAt(rowIndex, colIndex + 1).toString();
                 String cell3Value = tableProfileData.getValueAt(rowIndex, colIndex + 2).toString();
                 String cell4Value = tableProfileData.getValueAt(rowIndex, colIndex + 3).toString();
+                String cell5Value = tableProfileData.getValueAt(rowIndex, colIndex + 4).toString();
 
                 if (cell1Value.trim().length() != 0) {
                     // we take the value if it is not empty
-                    Profile pfile = new Profile();
-                    pfile.setTitle(cell1Value);
-                    pfile.setAddress(cell2Value);
 
-                    if (cell3Value.contains("browse")) {
+                    Profile pfile = new Profile();
+                    pfile.setSelected(Boolean.valueOf(cell0Value.toString()));
+                    pfile.setCompanyName(cell1Value);
+                    pfile.setTitle(cell2Value);
+                    pfile.setAddress(cell3Value);
+
+                    if (cell4Value.contains("browse")) {
                         pfile.setPicture(null);
-                    } else if (cell3Value.contains("preview")) {
-                        pfile.setPicture(fsm.getProfilePictureObject(cell4Value));
+                    } else if (cell4Value.contains("preview")) {
+                        pfile.setPicture(fsm.getProfilePictureObject(cell5Value));
+                    }
+
+                    if (cell0Value != null) {
+                        oneSelected = (Boolean) cell0Value;
+                        if (oneSelected) {
+                            // when checked we use it as the profile
+                            selectedProfile = pfile;
+                        }
                     }
 
                     data.add(pfile);
@@ -260,8 +277,15 @@ public class ProfileDialog extends javax.swing.JDialog {
                 // continue to read another row
             }
 
+            
+            
         }
 
+        if(oneSelected == false){
+            // when false we show the user a message
+            MessageBox.showing("You have to check 1 profile at least!");
+        }
+        
         // lastly save it
         if (data.size() > 0) {
             fsm.saveProfile(data);
@@ -367,7 +391,7 @@ public class ProfileDialog extends javax.swing.JDialog {
         DefaultTableModel dtm = (DefaultTableModel) tableProfileData.getModel();
 
         // preparing a new empty data
-        dtm.addRow(new Object[]{false, -1, "", "", "browse", ""});
+        dtm.addRow(new Object[]{false, "", "", "", "browse", ""});
     }
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

@@ -9,22 +9,17 @@ package frame;
 import beans.Item;
 import beans.Profile;
 import beans.Receipt;
-import com.github.anastaciocintra.escpos.EscPos;
-import com.github.anastaciocintra.output.PrinterOutputStream;
 import helper.Effects;
 import helper.FileSystemManager;
+import helper.MessageBox;
 import helper.PrintUtility;
 import helper.TextFormatter;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Image;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import simulation.AccessOperation;
@@ -51,6 +46,11 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
         pu.preparePrinter();
         renderComboboxPrinterName(pu.getPrintersAvailable());
         prepareProfiles();
+    }
+
+    // thils will be called by the anther frame
+    public void setProfile(Profile po) {
+        selectedProfile = po;
     }
 
     private void renderComboboxPrinterName(ArrayList<String> dataIn) {
@@ -315,6 +315,20 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private boolean isNumber(String val) {
+        boolean r = false;
+        try {
+            Integer.parseInt(val);
+
+            r = true;
+
+        } catch (Exception ex) {
+            r = false;
+        }
+
+        return r;
+    }
+
     private void textboxItemPriceFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textboxItemPriceFocusLost
 
         Effects.textboxLostFocus(textboxItemPrice);
@@ -322,8 +336,13 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
         String val = textboxItemPrice.getText();
 
         if (val.length() > 0) {
-            if (!val.contains("Rp")) {
-                textboxItemPrice.setText(TextFormatter.asCurrency(Integer.parseInt(val)));
+            if (isNumber(val)) {
+                if (!val.contains("Rp")) {
+                    textboxItemPrice.setText(TextFormatter.asCurrency(Integer.parseInt(val)));
+                }
+            }else{
+                MessageBox.showing("Please input valid number only!");
+                textboxItemPrice.requestFocus();
             }
         }
 
@@ -384,8 +403,13 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
     private void renderComboboxProfile(ArrayList<Profile> dataIn) {
         comboboxProfile.removeAllItems();
         for (Profile prof : dataIn) {
-            comboboxProfile.addItem(prof.getTitle());
+            comboboxProfile.addItem(prof.getCompanyName());
+
         }
+
+        selectedProfile = fsm.readProfileSelected();
+        comboboxProfile.setSelectedItem(selectedProfile.getCompanyName());
+
     }
 
     private void buttonClearDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonClearDataActionPerformed
@@ -498,12 +522,13 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
 
     private void buttonPrintDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPrintDataActionPerformed
 
+        // set the printer driver
+        applyPrinterChosen();
+
         // grab all the values from arrays
         // because array reflect the jtable too
         // and save it into Database
         resi.setShopList(dataOrders);
-        accessDB.addData(resi);
-        accessDB.exit();
 
         resi.setCompanyName(selectedProfile.getCompanyName());
         resi.setTitle(selectedProfile.getTitle());
@@ -516,38 +541,45 @@ public class PrinterKasirFrame extends javax.swing.JFrame {
         resi.setClientName(textboxClientName.getText());
         resi.setClientType(comboboxClientType.getSelectedItem().toString());
 
-        for (Item s : dataOrders) {
-            resi.shop(s);
-        }
         /*
         Item item = new Item();
         item.setName("Ms. Office");
         item.setQuantity(1);
         item.setPrice(500000);
          */
-
         // clear the form
         clearTextbox(textboxItemName);
         clearTextbox(textboxItemPrice);
 
         // call the printer
+        pu.setTitleMode(PrintUtility.COMPANY_NAME_ONLY);
         pu.setReceipt(resi);
         pu.print();
 
+        accessDB.addData(resi);
+        accessDB.exit();
+
         // clear back the behind the scenes
-        dataOrders = new ArrayList<Item>();
+        dataOrders.clear();
         resi = new Receipt();
-        
+        renderTable();
+
     }//GEN-LAST:event_buttonPrintDataActionPerformed
 
     private void comboboxPrinterNameListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboboxPrinterNameListActionPerformed
 
         // set the printer into the print utility
-        if (comboboxPrinterNameList.getSelectedIndex() != -1) {
-            pu.setPrinterChosen(comboboxPrinterNameList.getSelectedItem().toString());
-        }
+        applyPrinterChosen();
 
     }//GEN-LAST:event_comboboxPrinterNameListActionPerformed
+
+    private void applyPrinterChosen() {
+        if (comboboxPrinterNameList.getSelectedIndex() != -1) {
+            String nama = comboboxPrinterNameList.getSelectedItem().toString();
+            pu.setPrinterChosen(nama);
+            System.out.println("Memilih printer " + nama);
+        }
+    }
 
     private void calculateTotal() {
 

@@ -26,19 +26,18 @@ public class FileSystemManager {
     // all data of profiles here
     String profileFileName = "profile.dat";
     // single data profile selected here
-    String profileSelectedFileName = "profile.sel";
     String logoFileName = "logo.png";
     String dbFileName = "access.accdb";
     String completeSystemPath = System.getenv("APPDATA") + File.separator + appName;
     String completeRawPath = completeSystemPath + File.separator + rawName;
     String completeProfilePath = completeSystemPath + File.separator + profileFileName;
-    String completeProfileSelectedPath = completeSystemPath + File.separator + profileSelectedFileName;
     String completeLogoPath = completeSystemPath + File.separator + logoFileName;
     String completeDBPath = completeSystemPath + File.separator + dbFileName;
 
     public String getFrameIconPath() {
         return completeLogoPath;
     }
+
     public String getDBCompletePath() {
         return completeDBPath;
     }
@@ -80,6 +79,7 @@ public class FileSystemManager {
 
         return target;
     }
+
     public File getFileObject(String filename) {
         File target = new File(completeSystemPath, filename);
 
@@ -115,9 +115,11 @@ public class FileSystemManager {
                         String data[] = val.split(";");
                         Profile single = new Profile();
 
-                        single.setTitle(data[0]);
-                        single.setAddress(data[1]);
-                        single.setPicture(this.getProfilePictureObject(data[2]));
+                        single.setSelected(Boolean.valueOf(data[0]));
+                        single.setCompanyName(data[1]);
+                        single.setTitle(data[2]);
+                        single.setAddress(data[3]);
+                        single.setPicture(this.getProfilePictureObject(data[4]));
 
                         dataProf.add(single);
                     }
@@ -135,16 +137,29 @@ public class FileSystemManager {
         return dataProf;
     }
 
-    public String readProfileSelected() {
-        String val = null;
+    public Profile readProfileSelected() {
+        Profile data = null;
         try {
-            File myObj = new File(completeProfileSelectedPath);
+            File myObj = new File(completeProfilePath);
 
             if (myObj.exists()) {
+                String valTerbaca = null;
+                String valOverall [] = null;
+                
                 Scanner myReader = new Scanner(myObj);
                 while (myReader.hasNextLine()) {
-                    val = myReader.nextLine();
-                    //System.out.println(data);
+                    valTerbaca = myReader.nextLine();
+                    data = new Profile();
+                    
+                    valOverall = valTerbaca.split(";");
+                    
+                    data.setSelected(Boolean.valueOf(valOverall[0]));
+                    data.setCompanyName(valOverall[1]);
+                    data.setTitle(valOverall[2]);
+                    data.setAddress(valOverall[3]);
+                    data.setPicture(getProfilePictureObject(valOverall[4]));
+                    
+                    break;
                 }
 
                 myReader.close();
@@ -155,7 +170,7 @@ public class FileSystemManager {
             ex.printStackTrace();
         }
 
-        return val;
+        return data;
     }
 
     public void saveProfile(ArrayList<Profile> dataIn) {
@@ -163,7 +178,11 @@ public class FileSystemManager {
         try {
             FileWriter myWriter = new FileWriter(completeProfilePath);
             for (Profile prof : dataIn) {
-                myWriter.write(prof.getTitle() + ";" + prof.getAddress() + ";" + prof.getPicture().getName() + "\n");
+                myWriter.write(prof.isSelected() +";" 
+                        + prof.getCompanyName() + ";" 
+                        + prof.getTitle() + ";" 
+                        + prof.getAddress() + ";" 
+                        + prof.getPicture().getName() + "\n");
             }
 
             myWriter.close();

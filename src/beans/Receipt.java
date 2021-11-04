@@ -17,6 +17,10 @@ import java.util.Date;
  */
 public class Receipt {
 
+    public String toString(){
+        return "data resi : " + title + " " + companyName + " " + clientName + " " + clientType + " " + dateText;
+    }
+    
     private String title;
     private File picture;
     private String clientName;
@@ -85,6 +89,7 @@ public class Receipt {
      */
     public void setShopList(ArrayList<Item> shopList) {
         this.shopList = shopList;
+        this.calculate();
     }
 
     /**
