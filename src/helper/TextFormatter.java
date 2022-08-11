@@ -23,7 +23,10 @@ public class TextFormatter {
     static int limitText = 16;
 
     public static int asNumeric(String currencyIn) {
-        String val = currencyIn.replace("Rp.", "").replace(".", "").trim();
+        String val = null;
+
+            val = currencyIn.replaceAll("\\s+","").replace("Rp.", "").replace(".", "").trim();
+       
         return Integer.parseInt(val);
     }
 
@@ -78,7 +81,9 @@ public class TextFormatter {
         DecimalFormat kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
         DecimalFormatSymbols formatRp = new DecimalFormatSymbols();
 
-        if (val <= 999) {
+        if (val <= 0) {
+            formatRp.setCurrencySymbol("Rp.  ");
+        }else if (val <= 999) {
             formatRp.setCurrencySymbol("Rp.       ");
         } else if (val <= 9999) {
             formatRp.setCurrencySymbol("Rp.     ");
